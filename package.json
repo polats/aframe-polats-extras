@@ -1,13 +1,13 @@
 {
-  "name": "aframe-extras",
-  "version": "3.7.0",
-  "description": "Add-ons and examples for A-Frame VR.",
-  "author": "Don McCurdy <dm@donmccurdy.com>",
+  "name": "aframe-polats-extras",
+  "version": "1.0.0",
+  "description": "More add-ons and examples for A-Frame VR. Based on aframe-extras",
+  "author": "Paul Gadi <paulgadi@gmail.com>",
   "license": "MIT",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/donmccurdy/aframe-extras.git"
+    "url": "git+https://github.com/polats/aframe-polats-extras.git"
   },
   "scripts": {
     "dev": "budo --port=9000 browser.js:aframe-extras.js --live --open",
