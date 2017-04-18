@@ -1,48 +1,25 @@
 # Controls
 
-**NOTE:** Parts of these controls components may be merged into A-Frame core in the future. See [aframevr/aframe#1248](https://github.com/aframevr/aframe/pull/1248).
+Components giving additional control options from default A-Frame.
 
-Extensible movement/rotation/hotkey controls, with support for a variety of input devices.
-
-- **universal-controls**: Manager for other controls, which can be used to decide which input device is used when multiple are available, and to set common acceleration/sensitivity across all controls.
+- **vr-remote-controls**: Uses either [daydream-controller.js](https://github.com/mrdoob/daydream-controller.js/) for movement via a Daydream Controller, or [ProxyControls.js](http://proxy-controls.donmccurdy.com/) to use a mobile phone as an emulator controller
+- **rts-controls**: Use a mouse or touch to move an entity in 3rd person view, similar to an RTS. Requires a reference raycast camera if the player can change cameras
 
 ## Usage
 
-Basic:
+Using Daydream Controller (take note this only works on trusted sites (localhost / https:// )):
 
 ```html
-<a-entity camera universal-controls></a-entity>
+<a-entity camera vr-remote-controls></a-entity>
 ```
 
-Extend with custom controls:
+Using ProxyControls (requires the included proxy server code to be run):
 
 ```html
-<a-entity camera
-          universal-controls="movementControls: custom, gamepad;"
-          custom-controls></a-entity>
+<a-entity camera vr-remote-controls="proxy: true"></a-entity>
 ```
 
-## Input devices:
-
-- **checkpoint-controls**: Teleport or animate between checkpoints. See also: [checkpoint](/src/misc/checkpoint.js).
-- **gamepad-controls**: Gamepad position + (optional) rotation controls.
-- **hmd-controls**: HMD rotation / positional tracking controls.
-- **keyboard-controls**: WASD+Arrow key movement controls, with improved support for ZQSD and Dvorak layouts.
-- **mouse-controls**: Mouse + Pointerlock controls. *Non-VR / desktop only.*
-- **touch-controls**: Touch-to-move controls, e.g. for Cardboard.
-
-## Other Controls
-
-I've written standalone components for several other control components.
-
-- [gamepad-controls](https://github.com/donmccurdy/aframe-gamepad-controls): A more advanced standalone gamepad controller than the version in this package.
-- [keyboard-controls](https://github.com/donmccurdy/aframe-keyboard-controls): A more advanced standalone keyboard controller than the version in this package.
-- **leap-motion-controls**: *In progress.*
-
-## Mobile + Desktop Input Devices
-
-Connect input devices from your desktop to your mobile phone with WebRTC, using [ProxyControls.js](https://proxy-controls.donmccurdy.com).
-
-## Mobile Gamepad Support
-
-See my [separate overview of gamepad support](https://gist.github.com/donmccurdy/cf336a8b88ba0f10991d4aab936cc28b).
+Using Mouse RTS Controller:
+```html
+<a-entity mouse-rts-controls="raycastCamera: #playerCamera"></a-entity>
+```

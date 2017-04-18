@@ -1,14 +1,14 @@
 module.exports = {
-  'remote-phone-controls': require('./remote-phone-controls'),
-  'daydream-controls':  require('./daydream-controls'),
+  'vr-remote-controls': require('./vr-remote-controls'),
+  'mouse-rts-controls': require('./mouse-rts-controls'),
 
   registerAll: function (AFRAME) {
     if (this._registered) return;
 
     AFRAME = AFRAME || window.AFRAME;
 
-    if (!AFRAME.components['remote-phone-controls'])  AFRAME.registerComponent('remote-phone-controls', this['remote-phone-controls']);
-    if (!AFRAME.components['daydream-controls'])     AFRAME.registerComponent('daydream-controls',    this['daydream-controls']);
+    if (!AFRAME.components['vr-remote-controls'])  AFRAME.registerComponent('vr-remote-controls', this['vr-remote-controls']);
+    if (!AFRAME.components['mouse-rts-controls'])  AFRAME.registerComponent('mouse-rts-controls', this['mouse-rts-controls']);
 
     this._registered = true;
   }
