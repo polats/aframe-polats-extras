@@ -35,7 +35,7 @@ module.exports = {
     dashLineLength: {default: '3'},
     showTeleportRay: {default: true},
     showChargeLine: {default: false},
-    moveScheme: {default: 'cursor', oneOf: ['cursor', 'button']},
+    moveScheme: {default: 'button', oneOf: ['cursor', 'button']},
   },
 
   init: function () {
