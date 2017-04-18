@@ -1,6 +1,6 @@
 module.exports = {
   'vr-remote-controls': require('./vr-remote-controls'),
-  'mouse-rts-controls': require('./mouse-rts-controls'),
+  'rts-controls': require('./rts-controls'),
 
   registerAll: function (AFRAME) {
     if (this._registered) return;
@@ -8,7 +8,7 @@ module.exports = {
     AFRAME = AFRAME || window.AFRAME;
 
     if (!AFRAME.components['vr-remote-controls'])  AFRAME.registerComponent('vr-remote-controls', this['vr-remote-controls']);
-    if (!AFRAME.components['mouse-rts-controls'])  AFRAME.registerComponent('mouse-rts-controls', this['mouse-rts-controls']);
+    if (!AFRAME.components['rts-controls'])  AFRAME.registerComponent('rts-controls', this['rts-controls']);
 
     this._registered = true;
   }
