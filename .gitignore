@@ -3,5 +3,6 @@ node_modules
 **/bundle.js
 npm-debug.log
 build
-examples/aframe-extras.js
+examples/aframe-polats-extras.js
+src/proxyserver/frontend/dist/**
 **/tmp*
