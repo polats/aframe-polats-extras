@@ -1,0 +1,128 @@
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>ProxyControls • Demo</title>
+    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v3.3.0/dist/aframe-extras.min.js"></script>
+    <script src="../dist/aframe-polats-extras.js"></script>
+
+
+    <style>
+      .intro-overlay {
+        z-index: 1;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        max-width: 280px;
+        box-sizing: border-box;
+        padding: 1.5em;
+
+        color: #FFF;
+        background: #222;
+        font-family: Source Sans Pro, Helvetica Neue, Helvetica, Arial, sans-serif;
+      }
+
+      .intro-overlay-link {
+        display: inline-block;
+        float: right;
+        padding: 0.3em 1em 0.35em;
+        margin-top: 1em;
+
+        text-decoration: none;
+        color: #fff;
+        background: #333;
+      }
+
+        .intro-overlay-link:hover { background: #444; }
+
+      @media screen and (min-width: 550px) {
+        .intro-overlay { max-width: 450px; }
+      }
+
+    </style>
+  </head>
+  <body>
+    <a-scene>
+      <!--
+        Camera + Gamepad controls
+        Button 0 is "A" on an Xbox controller.
+
+        // phone-remote-controls="target: #cursor"
+      -->
+      <a-entity camera
+                kinematic-body
+                jump-ability
+                position="0 1 0"
+                universal-controls>
+                       <a-entity vr-remote-controls="proxy: true; proxyUrl: http://localhost:3000">
+                      </a-entity>
+      </a-entity>
+
+      <a-cursor id="cursor" geometry="primitive: ring; radius-outer: 0.2; radius-inner: 0.06" material="color: lightblue" opacity="0.7"></a-cursor>
+
+      <!-- Ground -->
+      <a-grid static-body></a-grid>
+
+      <!-- Tower -->
+      <a-box id="tower"
+              color="#39BB82"
+              width="10" height="5" depth="6"
+              position="0 2.5 -15"
+              static-body></a-box>
+
+      <!-- Ramp -->
+      <a-box id="ramp"
+             color="#39BB82"
+             width="1" height="10" depth="18.86796"
+             position="0 -4.04 -6.33"
+             rotation="30 0 0"
+             static-body></a-box>
+
+      <!-- Moving platforms -->
+      <a-box id="platform1"
+             color="#39BB82"
+             width="4" height="0.25" depth="4"
+             position="7 0.125 -15"
+             velocity="0 0 0"
+             toggle-velocity="axis: z; min: -5; max: 5;"
+             static-body></a-box>
+      <a-box id="platform2"
+             color="#39BB82"
+             width="4" height="0.25" depth="4"
+             position="-7 0.125 -15"
+             velocity="0 0 0"
+             toggle-velocity="axis: y; min: 0.125; max: 5;"
+             static-body></a-box>
+
+      <!-- Blocks -->
+      <a-box color="#39BB82"
+             width="1" height="1" depth="1"
+             position="15 2 0.6"
+             dynamic-body></a-box>
+      <a-box color="#39BB82"
+             width="1" height="1" depth="1"
+             position="15 2 -0.6"
+             dynamic-body></a-box>
+      <a-box color="#39BB82"
+             width="1" height="1" depth="1"
+             position="15 4 0"
+             dynamic-body></a-box>
+      <a-cylinder color="#39BB82"
+             rotation="90 0 0"
+             position="15 2 4"
+             dynamic-body></a-cylinder>
+      <a-sphere color="#39BB82"
+             position="15 2 -4"
+             dynamic-body></a-sphere>
+
+      <!-- Lighting -->
+      <a-light type="ambient" color="#bbb"></a-light>
+      <a-light color="#ccc" position="0 30 0" distance="100" intensity="0.4" type="point"></a-light>
+      <a-light color="#ccc" position="3 10 -10" distance="50" intensity="0.4" type="point"></a-light>
+
+
+    </a-scene>
+
+  </body>
+</html>

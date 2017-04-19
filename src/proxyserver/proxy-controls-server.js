@@ -29,7 +29,7 @@ function ProxyControlsServer (options) {
   if (options.sslPort) {
     assert(options.key, 'key required for SSL.');
     assert(options.cert, 'cert required for SSL.');
-    
+
     this.app.use(forceSSL());
     http.createServer(this.app.callback()).listen(options.port);
     this.server = https.createServer({
@@ -42,7 +42,7 @@ function ProxyControlsServer (options) {
 
   this.app
     .use(cors({origin: true}))
-    .use(resources('client'))
+    .use(resources('./src/proxyserver/frontend'))
     .use(route.get('/ajax/nearby', this.routeNearby()))
     .use(route.get('/ajax/pair-code', this.routePairCode()));
 

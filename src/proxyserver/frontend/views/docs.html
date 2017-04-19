@@ -1,0 +1,158 @@
+<div class="view docs-view flex-grow">
+  <div class="container">
+
+    <h1>Docs</h1>
+
+    <ul>
+      <li><a href="/#/docs#overview" ng-click="goHash('overview')">Overview</a></li>
+      <li><a href="/#/docs#host-device" ng-click="goHash('host-device')">Host Device</a></li>
+      <li><a href="/#/docs#remote-device" ng-click="goHash('remote-device')">Remote Device + A-Frame VR</a></li>
+      <li><a href="/#/docs#remote-device-without-aframe" ng-click="goHash('remote-device-without-aframe')">Remote Device, without A-Frame</a></li>
+      <li><a href="/#/docs#webrtc" ng-click="goHash('webrtc')">WebRTC + Browser Compatibility</a></li>
+    </ul>
+
+    <section id="overview">
+      <h2>Overview</h2>
+
+      <p>
+        ProxyControls shares events from input devices (keyboard, gamepad, etc.)
+        with a remote device. While viewing a WebVR site on your phone with Google
+        Cardboard, you can use a USB gamepad &mdash; connected to your PC &mdash; to
+        move around.
+      </p>
+
+      <p>
+        This project works great with Mozilla’s new WebVR library, <a target="_blank" href="https://aframe.io/">A-Frame</a>.
+      </p>
+
+    </section>
+
+    <hr>
+
+    <section id="host-device">
+      <h2>Host Device</h2>
+
+      <p>
+        For your host (the machine connected directly to the input device), this
+        website is all you need:
+      </p>
+
+      <p>› <a href="/#/connect">Connect as host</a></p>
+
+    </section>
+
+    <hr>
+
+    <section id="remote-device">
+      <h2>Remote Device + A-Frame VR</h2>
+
+      <p>
+        For your remote device (e.g. phone) use a <code>proxy-controls</code>
+        component to receive input events:
+      </p>
+
+      <ul>
+        <li>
+          A-Frame
+          <a href="https://github.com/donmccurdy/aframe-proxy-controls">
+            proxy-controls
+            <img class="a-icon"
+                 src="/assets/GitHub-Mark-32px.png"
+                 srcset="/assets/GitHub-Mark-32px.png 1x,
+                         /assets/GitHub-Mark-64px.png 2x"
+                 alt="GitHub logo">
+          </a>
+        </li>
+      </ul>
+
+      <p>
+        You’ll also need an input device component to <i>apply</i>
+        those events and manipulate the scene. Here are a few client packages,
+        designed for A-Frame:
+      </p>
+
+      <ul>
+        <li>
+          A-Frame
+          <a href="https://github.com/donmccurdy/aframe-keyboard-controls">
+            keyboard-controls
+            <img class="a-icon"
+                 src="/assets/GitHub-Mark-32px.png"
+                 srcset="/assets/GitHub-Mark-32px.png 1x,
+                         /assets/GitHub-Mark-64px.png 2x"
+                 alt="GitHub logo">
+          </a>
+        </li>
+        <li>
+          A-Frame
+          <a href="https://github.com/donmccurdy/aframe-gamepad-controls">
+            gamepad-controls
+            <img class="a-icon"
+                 src="/assets/GitHub-Mark-32px.png"
+                 srcset="/assets/GitHub-Mark-32px.png 1x,
+                         /assets/GitHub-Mark-64px.png 2x"
+                 alt="GitHub logo">
+          </a>
+        </li>
+        <li>
+          A-Frame <span class="a-disabled">leap-motion-controls</span> <i>(Coming soon)</i>
+        </li>
+      </ul>
+
+      <p>Example:</p>
+
+      <pre><code>&lt;a-scene <b>proxy-controls</b>&gt;
+  &lt;a-cube&gt;&lt;/a-cube&gt;
+  &lt;a-entity camera
+            <b>gamepad-controls</b>
+            <b>keyboard-controls</b>&gt;
+  &lt;/a-entity&gt;
+&lt;/a-scene&gt;
+</code></pre>
+
+    </section>
+
+    <hr>
+
+    <section id="remote-device-without-aframe">
+      <h2>Remote Device, without A-Frame</h2>
+
+      <p>
+        There’s no official pre-packaged support for ProxyControls outside of the
+        A-Frame environment yet. Feel free to build your own, or
+        <a href="https://github.com/donmccurdy/proxy-controls-server/issues/new">open an issue on GitHub</a>
+        if you’re interested in discussing an idea.
+      </p>
+    </section>
+
+    <hr>
+
+    <section id="webrtc">
+      <h2>WebRTC + Browser Compatibility</h2>
+
+      <p>
+        ProxyControls uses WebRTC's peer-to-peer DataChannel API to reduce
+        connection latency. The WebRTC spec is not finalized, and
+        <a href="http://caniuse.com/#search=webrtc" target="_blank">not yet
+        supported in all browsers</a>. When WebRTC is not available, ProxyControls
+        will automatically switch to WebSockets.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Browser</th><th>Status (Jan. 2016)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chrome</td><td><span class="toggle green">WebRTC + WebSockets</span></td></tr>
+          <tr><td>Firefox</td><td><span class="toggle green">WebRTC + WebSockets</span></td></tr>
+          <tr><td>Opera</td><td><span class="toggle green">WebRTC + WebSockets</span></td></tr>
+          <tr><td>Safari / iOS</td><td><span class="toggle yellow">WebSockets</span></td></tr>
+          <tr><td>Edge</td><td><span class="toggle yellow">WebSockets</span></td></tr>
+          <tr><td>IE 11</td><td><span class="toggle yellow">WebSockets</span></td></tr>
+        </tbody>
+      </table>
+
+    </section>
+
+  </div>
+</div>

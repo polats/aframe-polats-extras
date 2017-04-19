@@ -1,0 +1,424 @@
+/* Client CSS
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+/* Page layout
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+html {
+  background: #222;
+}
+
+body {
+  background: #FFF;
+  min-height: 100vh;
+  overflow-y: scroll;
+  box-sizing: border-box;
+  padding-top: 60px;
+}
+
+.container {
+  max-width: 850px; 
+}
+
+.view {
+  padding-top: 2rem;
+}
+
+section {
+  margin-bottom: 6rem;
+}
+
+@media screen and (min-width: 750px) {
+  .view { padding-top: 4rem; }
+}
+
+/* Typography
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+h1 { font-size: 5.0rem; }
+h2 { font-size: 3.6rem; }
+h3 { font-size: 3.0rem; }
+h4 { font-size: 2.4rem; }
+body { font-size: 1.8rem; }
+
+p { font-weight: 300; line-height: 1.7em; }
+
+a { text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+.caps { font-size: 1.5rem; font-weight: 400; }
+.a-disabled { color: #888; }
+.a-icon { height: 2rem; vertical-align: text-top; }
+.a-with-icon { white-space: nowrap; }
+
+/* Flexbox
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.flex {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: flex;
+}
+
+.flex-column {
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.flex-grow {
+  -webkit-flex-grow: 1;
+  -moz-flex-grow: 1;
+  -ms-flex-grow: 1;
+  flex-grow: 1;
+}
+
+.flex-center {
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+}
+
+.flex-space-around {
+  -webkit-justify-content: space-around;
+  -moz-justify-content: space-around;
+  -ms-justify-content: space-around;
+  justify-content: space-around;
+}
+
+/* Header
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+header {
+  position: fixed;
+  
+  top: 0;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  background: #222;
+  z-index: 1000;
+}
+
+header h4,
+header nav {
+  margin: 0;
+  line-height: inherit;
+  display: inline-block;
+}
+
+header > .container {
+  position: static;
+}
+
+.logo,
+.logo:hover {
+  color: #FFF;
+  text-decoration: none;
+}
+
+.version {
+  font-size: 0.4em;
+  font-weight: 600;
+  text-transform: uppercase;
+  position: relative;
+  bottom: 1em;
+  color: #1EAEDB;
+}
+
+/* Navigation
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.menu-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 60px;
+  padding: 0 30px;
+}
+
+  .menu-btn:active { background: #444; }
+
+.menu-btn:before {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 22px;
+  width: 30px;
+  height: 0.12em;
+  background: #F0F0F0;
+  box-shadow:
+    0 0.35em 0 0 #F0F0F0,
+    0 0.7em 0 0 #F0F0F0;
+}
+
+nav {
+  position: absolute;
+  top: 60px;
+  right: -250px;
+  width: 250px;
+  height: calc(100vh - 60px);
+
+  -webkit-transition: right 0.2s ease;
+  -moz-transition: right 0.2s ease;
+  -ms-transition: right 0.2s ease;
+  transition: right 0.2s ease;
+
+  -webkit-backdrop-filter: blur(5px);
+  -moz-backdrop-filter: blur(5px);
+  -ms-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background: rgba(40,40,40,0.95);
+}
+
+  nav.open { right: 0; }
+
+.nav-link {
+  display: block;
+  height: 60px;
+  box-sizing: border-box;
+  border-left: 5px solid transparent;
+  padding: 0 1em;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: #FFF;
+  text-decoration: none;
+}
+
+  .nav-link.active { border-left: 5px solid #33C3F0; }
+
+  .nav-link:hover,
+  .nav-link:active {
+    color: #FFF;
+    text-decoration: none;
+
+    -webkit-backdrop-filter: blur(5px);
+    -moz-backdrop-filter: blur(5px);
+    -ms-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    background: rgba(34, 34, 34, 0.5);
+  }
+
+@media screen and (min-width: 750px) {
+  .menu-btn { display: none; }
+
+  nav {
+    position: static;
+    width: auto;
+    height: 60px;
+    background: none;
+  }
+
+  .nav-link {
+    display: inline-block;
+    float: left;
+    border-left: 0; 
+  }
+
+    .nav-link.active {
+      border-left: 0; 
+      border-bottom: 5px solid #33C3F0;
+    }
+
+    .nav-link:hover,
+    .nav-link:active {
+      -webkit-backdrop-filter: none;
+      -moz-backdrop-filter: none;
+      -ms-backdrop-filter: none;
+      backdrop-filter: none;
+      background: #444;
+    }
+
+}
+
+/* Footer
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+footer {
+  padding: 3rem 0;
+  font-size: 1.5rem;
+  background: #222222;
+  color: #bfbfbf;
+}
+
+.footer-links {
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.footer-link {
+  display: block;
+  line-height: 2em;
+}
+
+.footer-desc p:last-child { margin-bottom: 0; }
+
+footer a.attrib {
+  color: inherit;
+}
+
+@media screen and (min-width: 550px) {
+  .footer-links {
+    margin-top: 0.2em;
+    margin-bottom: 0;
+    text-align: left;
+  }
+
+  .footer-link {
+    line-height: 1.2em;
+  }
+}
+
+/* Home
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+body.bg-dark { background: url("footer_lodyas.png"); }
+
+.home-view {
+  color: #FFF;
+  padding: 2rem;
+  text-align: center;
+}
+
+.home-view > .container {
+  padding: 0;
+}
+
+.home-title {
+  font-size: 3.6rem;
+  font-weight: 300;
+  text-align: center;
+  text-shadow: 1px 1px 1px #000;
+}
+
+.home-subtitle {
+  font-size: 2.2rem;
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+}
+
+.home-caption {
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+.home-view .button {
+  color: #FFF;
+}
+
+@media screen and (min-width: 550px) {
+  .home-title { font-size: 5rem; }
+  .home-subtitle { font-size: 3rem; }
+  .home-caption { text-align: center; }
+}
+
+/* Getting Started
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+/* Device notice */
+
+.device-notice {
+  border-left: 5px solid #DAA520;
+  padding-left: 1em;
+}
+
+i.alert {
+  display: inline-block;
+  position: relative;
+  top: 0.1em;
+  margin-right: 0.2em;
+  margin-top: -0.5em;
+
+  border: 0.6em solid transparent;
+  border-bottom: 1em solid #DAA520;
+}
+
+i.alert:after {
+  position: absolute;
+  left: -0.1em;
+  top: 0.1em;
+
+  font-style: normal;
+  font-size: 0.8em;
+  content: "!";
+  color: #FFF;
+}
+
+@media screen and (min-width: 550px) {
+  .device-notice { display: none; }
+}
+
+/* Pair code input */
+
+input.ng-invalid,
+input.ng-invalid:focus { border-color: #ED143D; }
+
+/* Connection status */
+
+.status {
+  color: #FFF;
+  border-radius: 4px;
+  padding: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+  .status.status-pending { background: #DAA520; }
+  .status.status-connected { background: #33C3F0; }
+
+
+.status .button {
+  color: #fff;
+  background: rgba(255,255,255,0.2);
+  border: 0;
+  margin: 0;
+}
+
+  .status .button:hover { background: #ED143D; }
+
+/* Modules
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.module {
+  background: #F8F8F8;
+  border-radius: 4px;
+  padding: 3rem;
+}
+
+  .module + .module { margin-top: 1rem; }
+  .module:last-child { margin-bottom: 2rem; }
+
+.module ul,
+.module li:last-child {
+  margin-bottom: 0;
+}
+
+.module .button {
+  height: 30px;
+  width: 95px;
+  line-height: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* Toggles
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.toggle {
+  color: #FFF;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.2rem;
+}
+
+  .toggle.green  { background: #008000; }
+  .toggle.yellow { background: #DAA520; }
+  .toggle.red    { background: #ED143D; }
+
+/* Docs
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.docs-view hr {
+  margin: 6rem 0;
+}

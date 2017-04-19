@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ProxyControls.js</title>
+  <meta name="description" content="Mobile WebVR + Interactivity. Connect input devices from your desktop to your mobile phone with WebRTC.">
+  <meta name="author" content="Don McCurdy">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
+  <!-- Font
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,100,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="assets/normalize.css">
+  <link rel="stylesheet" href="assets/skeleton.css">
+  <link rel="stylesheet" href="assets/app.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.donmccurdy.com/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="https://www.donmccurdy.com/public/favicon.ico">
+
+  <!-- Analytics
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-37139324-2', 'auto');
+    ga('send', 'pageview');
+  </script>
+
+  <!-- Bootstrap
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="bundle.js"></script>
+
+</head>
+<body ng-app="proxyControlsApp" class="flex flex-column">
+
+  <!-- Header
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <header class="row" ng-controller="NavCtrl">
+    <div class="container">
+      <h4>
+        <a class="logo" href="/#/">ProxyControls<span style="font-weight: 100;">.js</span></a>
+        <span class="version">Beta</span>
+      </h4>
+      <div class="menu-btn" ng-click="navOpen = !navOpen" aria-label="Menu"></div>
+      <nav class="u-pull-right" ng-class="{ open: navOpen }">
+        <a href="/#/"
+           class="nav-link"
+           ng-class="{active: isActive('/')}">Home</a>
+        <a href="/#/connect"
+           class="nav-link"
+           ng-class="{active: isActive('/connect')}">Connect</a>
+        <a href="/#/docs"
+           class="nav-link"
+           ng-class="{active: isActive('/docs')}">Docs</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div ng-view class="view-wrap flex flex-column flex-grow"></div>
+
+  <!-- Footer
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <footer class="row">
+    <div class="row container">
+      <div class="footer-links three columns">
+        <li class="footer-link">
+          <a target="_blank" href="https://github.com/donmccurdy/proxy-controls-server">GitHub</a>
+        </li>
+        <li class="footer-link">
+          <a target="_blank" href="https://github.com/donmccurdy/proxy-controls-server/issues/new">Feedback</a>
+        </li>
+        <li class="footer-link">
+          <a target="_blank" href="https://webrtc.org/">WebRTC</a>
+        </li>
+      </div>
+      <div class="footer-desc nine columns">
+        <p>
+          <b>ProxyControls.js</b> is made by <a target="_blank" href="https://twitter.com/donrmccurdy">@donrmccurdy</a>.
+          Website built with <a class="attrib" href="https://nodejs.org/" target="_blank">Node.js</a>,
+          <a class="attrib" href="https://angularjs.org/" target="_blank">Angular.js</a>,
+          and <a class="attrib" href="http://getskeleton.com/" target="_blank">Skeleton</a>.
+          Background image <a class="attrib" href="http://subtlepatterns.com/dark-sharp-edges/" target="_blank">“Dark Sharp Edges”</a>
+          under <a class="attrib" href="https://creativecommons.org/licenses/by-sa/3.0/us/" target="_blank">CC BY-SA 3.0</a>
+          - <a class="attrib" href="http://subtlepatterns.com/" target="_blank">Subtle Patterns</a>
+          © <a class="attrib" href="http://lodyas.com/carlos-aguilar/" target="_blank">Carlos Aguilar</a>.
+        </p>
+        <p>
+          Open source. MIT license, 2016.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
+

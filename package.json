@@ -6,7 +6,10 @@
   "license": "MIT",
   "main": "index.js",
   "config": {
-    "proxyport": 8000
+    "proxyport": 3000,
+    "demo_host": "localhost",
+    "demo_port": 3000,
+    "proxy_url": "http://localhost:3000"
   },
   "repository": {
     "type": "git",
@@ -28,13 +31,17 @@
     "version": "npm run preversion:readme && npm run dist && git add -A dist README.md",
     "postversion": "git push && git push --tags && npm publish",
     "postpublish": "./scripts/publish.js",
-    "proxybuild": "browserify src/proxyserver/main.js -o proxybundle.js",
-    "proxyserver": "node run-proxyserver.js"
+    "proxybuild": "browserify src/proxyserver/frontend/app.js -o src/proxyserver/frontend/bundle.js",
+    "proxyserver": "./scripts/update-proxy-client.js && npm run proxybuild && node run-proxyserver.js"
   },
   "peerDependencies": {
     "aframe": "^0.5.0"
   },
   "dependencies": {
+    "angular": "1.4.8",
+    "angular-route": "1.4.8",
+    "angular-sanitize": "1.4.8",
+    "angular-touch": "1.4.8",
     "keyboardevent-key-polyfill": "^1.0.1",
     "socketpeer": "donmccurdy/socketpeer#fork-master",
     "whatwg-fetch": "^0.11.0",
