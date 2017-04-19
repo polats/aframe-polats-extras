@@ -7,7 +7,7 @@ const chalk = require('chalk'),
     uglifyJS = require('uglify-js'),
     Readable = require('stream').Readable;
 
-const DIST_DIR = 'dist',
+const DIST_DIR = 'src/proxyserver/frontend/dist',
     COMPONENTS_DIR = 'components',
     PACKAGES = ['controls', 'graphics'],
     COMPONENTS = [];

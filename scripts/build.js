@@ -18,7 +18,7 @@ fs.emptydirSync(BUILD_DIR);
 fs.copySync(EXAMPLES_DIR, BUILD_DIR);
 
 // Build.
-const fileName = 'aframe-extras.raw.js';
+const fileName = 'aframe-polats-extras.raw.js';
 const writeStream = fs.createWriteStream(path.join(BUILD_DIR, fileName));
 const readStream = new Readable();
 readStream.push([
