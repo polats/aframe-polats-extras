@@ -275,41 +275,57 @@ module.exports = {
   },
 
   updateOrientation: function () {
+    var self = this;
+    var data = this.data;
+    var orientation = data.orientation;
+    var temp_alpha, temp_beta, temp_gamma;
 
     var phonestate = this.getPhoneState();
 
-    if (phonestate === undefined)
-      return;
-
-    var data = this.data;
-    var orientation = data.orientation;
-
-    if (orientation.initial_value == null)
+    // proxy phone
+    if (phonestate)
     {
-
       if (phonestate.orientation.alpha != undefined)
       {
-          // set initial start rotation
-          orientation.initial_value =
-          {
-            alpha: phonestate.orientation.alpha,
-            beta: phonestate.orientation.beta,
-            gamma: phonestate.orientation.gamma
-          };
-
-          data.raycast_initialized = true;
-        }
+        temp_alpha = phonestate.orientation.alpha;
+        temp_beta = phonestate.orientation.beta;
+        temp_gamma = phonestate.orientation.gamma;
+      }
     }
 
-    if (data.raycast_initialized)
+    // daydream remote
+    if (self.daydreamRemote)
     {
-
-      // store event orientation values
-      orientation.alpha =  phonestate.orientation.alpha;
-      orientation.beta = phonestate.orientation.beta;
-      orientation.gamma = phonestate.orientation.gamma;
-
+      temp_alpha = self.quaternion.x;
+      temp_beta = self.quaternion.y;
+      temp_gamma = self.quaternion.z;
     }
+
+    if (temp_alpha)
+    {
+        if (orientation.initial_value == null)
+        {
+              orientation.initial_value =
+              {
+                alpha: temp_alpha,
+                beta: temp_beta,
+                gamma: temp_gamma
+              };
+
+              data.raycast_initialized = true;
+        }
+
+        if (data.raycast_initialized)
+        {
+
+          // store event orientation values
+          orientation.alpha =  temp_alpha;
+          orientation.beta = temp_beta;
+          orientation.gamma = temp_gamma;
+
+        }
+      }
+
   },
 
   getPhoneState: function () {
@@ -325,6 +341,7 @@ module.exports = {
   tick: function (t) {
       var data = this.data;
       var el = this.el;
+      var self = this;
 
       this.updateOrientation();
 
@@ -337,8 +354,6 @@ module.exports = {
         rotation.x = data.orientation.beta - data.orientation.initial_value.beta;
 
         el.setAttribute('rotation', rotation);
-
-        rotation = el.getAttribute('rotation');
      }
   },
 
