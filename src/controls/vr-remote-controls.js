@@ -4,6 +4,8 @@ require('whatwg-fetch');
 var SocketPeer = require('socketpeer'),
     Overlay = require('../lib/overlay');
 
+var DaydreamController = require('../lib/DaydreamController');
+
 var PROXY_URL = 'http://localhost:3000';
 if (typeof process !== 'undefined') {
   PROXY_URL = process.env.npm_package_config_proxy_url || PROXY_URL;
@@ -43,7 +45,9 @@ module.exports = {
     // remote cursor
     target: {
         type: "selector"
-    }
+    },
+
+    debugTextArea: {default: null}
 
   },
 
@@ -60,6 +64,22 @@ module.exports = {
    * Called once when component is attached. Generally for initial setup.
    */
   init: function () {
+    // daydream code
+    var self = this;
+    this.axis = new THREE.Vector3();
+    this.quaternion = new THREE.Quaternion();
+    this.quaternionHome = new THREE.Quaternion();
+    this.showRemoteModel = true;
+    this.initialized = false;
+    this.timeout = null;
+
+    this.connect = this.connect.bind(this);
+
+    window.addEventListener('connectDaydream', function (evt) {
+      self.connect();
+    });
+
+    // proxy code
     /** @type {SocketPeer} WebRTC/WebSocket connection. */
     this.peer = null;
 
@@ -79,7 +99,7 @@ module.exports = {
         .catch(console.error.bind(console));
     }
 
-    // initialize remote objects
+    // phone-remote code
 
     // changes raycast direction
     this.data.raycast_rotation =
@@ -181,6 +201,76 @@ module.exports = {
             return null;
         }
       });
+  },
+
+  connect: function () {
+    var data = this.data;
+    var self = this;
+    var debugTextArea = null;
+
+    this.controller = new DaydreamController();
+    if (this.data.debugTextArea)
+      debugTextArea = document.querySelector(this.data.debugTextArea);
+
+    this.controller.onStateChange( function ( state ) {
+      self.daydreamRemote = true;
+
+      debugTextArea.textContent = JSON.stringify( state, null, '\t' );
+
+      if ( self.showRemoteModel ) {
+
+        var angle = Math.sqrt( state.xOri * state.xOri + state.yOri * state.yOri + state.zOri * state.zOri );
+
+        if ( angle > 0 ) {
+
+          self.axis.set( state.xOri, state.yOri, state.zOri )
+          self.axis.multiplyScalar( 1 / angle );
+
+          self.quaternion.setFromAxisAngle( self.axis, angle );
+
+          if ( self.initialised === false ) {
+
+            self.quaternionHome.copy( self.quaternion );
+            self.quaternionHome.inverse();
+
+            self.initialised = true;
+
+          }
+
+        } else {
+
+          self.quaternion.set( 0, 0, 0, 1 );
+
+        }
+
+        if ( state.isHomeDown ) {
+
+          if ( self.timeout === null ) {
+
+            self.timeout = setTimeout( function () {
+
+              self.quaternionHome.copy( self.quaternion );
+              self.quaternionHome.inverse();
+
+            }, 1000 );
+
+          }
+
+        } else {
+
+          if ( self.timeout !== null ) {
+
+            clearTimeout( self.timeout );
+            self.timeout = null;
+
+          }
+
+        }
+      }
+
+
+    } );
+    this.controller.connect();
 
   },
 
@@ -283,6 +373,14 @@ module.exports = {
       peer.on('connect', console.info.bind(console, 'peer:connect("%s")'));
       peer.on('upgrade', console.info.bind(console, 'peer:upgrade("%s")'));
     }
+
+    // Add Daydream Button code
+
+    var self = this;
+    var daydreamLink = document.querySelector("#daydreamLink");
+    daydreamLink.addEventListener( 'click' , function () {
+      self.el.emit("connectDaydream");
+    });
   },
 
   onConnection: function () {

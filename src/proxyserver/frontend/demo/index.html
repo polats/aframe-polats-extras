@@ -44,18 +44,12 @@
   </head>
   <body>
     <a-scene>
-      <!--
-        Camera + Gamepad controls
-        Button 0 is "A" on an Xbox controller.
-
-        // phone-remote-controls="target: #cursor"
-      -->
       <a-entity camera
                 kinematic-body
                 jump-ability
                 position="0 1 0"
                 universal-controls>
-                       <a-entity vr-remote-controls="proxy: true; proxyUrl: http://localhost:3000">
+                       <a-entity vr-remote-controls="proxy: true; proxyUrl: http://localhost:3000; debugTextArea: #textarea">
                       </a-entity>
       </a-entity>
 
@@ -123,6 +117,12 @@
 
 
     </a-scene>
+
+    <div style="position:absolute; top:0; left:0; padding:12px;" >
+        <span id="message"></span><br /><br />
+        <textarea id="textarea" rows="20" cols="35"></textarea>
+    </div>
+
 
   </body>
 </html>
