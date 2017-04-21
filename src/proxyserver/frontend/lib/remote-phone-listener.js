@@ -1,6 +1,8 @@
 var Listener = require('./listener'),
     util = require('util');
 
+require('../../../lib/fulltilt.js')
+
 function RemotePhoneListener () {
   Listener.call(this);
 
@@ -27,7 +29,18 @@ RemotePhoneListener.prototype.bind = function () {
   window.addEventListener('touchstart', this.__listeners.touchstart);
   window.addEventListener('touchend', this.__listeners.touchend);
   window.addEventListener('deviceorientation', this.__listeners.deviceorientation);
-};
+
+  var self = this;
+  var deviceOrientation = FULLTILT.getDeviceOrientation({'type': 'game'});
+	deviceOrientation.then(function(orientationData) {
+
+		orientationData.listen(function() {
+
+      self.remotephonestate.orientation = orientationData.getScreenAdjustedQuaternion();
+
+		});
+  });
+}
 
 RemotePhoneListener.prototype.onTouchStart = function (evt) {
 
@@ -43,13 +56,6 @@ RemotePhoneListener.prototype.onTouchEnd = function (evt) {
 
 
 RemotePhoneListener.prototype.onDeviceOrientation = function (evt) {
-
-    this.remotephonestate.orientation =
-    {
-      alpha: evt.alpha,
-      beta: evt.beta,
-      gamma: evt.gamma
-    };
 
   this.emit(this.type, {type: this.type, state: this.remotephonestate});
 };

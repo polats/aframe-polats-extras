@@ -342,8 +342,16 @@ module.exports = {
 
       else
       {
-        var quat = state.getScreenAdjustedQuaternion();
-        this.mesh.quaternion.set(quat.x, quat.z, -quat.y, quat.w);
+        var quat = null;
+        if (this.isConnected())
+        {
+          quat = state.orientation;
+        }
+        else
+          quat = state.getScreenAdjustedQuaternion();
+
+        if (quat)
+          this.mesh.quaternion.set(quat.x, quat.z, -quat.y, quat.w);
       }
   },
 
