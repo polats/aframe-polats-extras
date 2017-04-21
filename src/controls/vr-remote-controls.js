@@ -1,5 +1,6 @@
 require('../lib/Object.polyfill.js');
 require('whatwg-fetch');
+require('../lib/fulltilt');
 
 var SocketPeer = require('socketpeer'),
     Overlay = require('../lib/overlay');
@@ -105,6 +106,7 @@ module.exports = {
         .catch(console.error.bind(console));
     }
 
+/*
     // phone-remote code
 
     // changes raycast direction
@@ -207,6 +209,23 @@ module.exports = {
             return null;
         }
       });
+*/
+
+  // initialize full tilt
+
+  	// Start FULLTILT DeviceOrientation listeners and register our callback
+  	var deviceOrientation = FULLTILT.getDeviceOrientation({'type': 'game'});
+  	deviceOrientation.then(function(orientationData) {
+
+  		orientationData.listen(function() {
+
+        // rotate model
+        if ( self.showRemoteModel ) {
+          var quat = orientationData.getScreenAdjustedQuaternion();
+          self.mesh.quaternion.set(quat.x, quat.z, -quat.y, quat.w);
+        }
+  		});
+  	});
   },
 
   update: function() {
@@ -416,6 +435,7 @@ module.exports = {
 
         rotation.y = data.orientation.alpha - data.orientation.initial_value.alpha;
         rotation.x = data.orientation.beta - data.orientation.initial_value.beta;
+        rotation.z = data.orientation.gamma - data.orientation.initial_value.gamma;
 
         el.setAttribute('rotation', rotation);
      }
