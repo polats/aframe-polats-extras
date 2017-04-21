@@ -203,6 +203,51 @@ module.exports = {
       });
   },
 
+  update: function() {
+      // initialize 3d model
+      var ddjson = 'https://cdn.rawgit.com/polats/aframe-polats-extras/af4b6e66/assets/daydream.json';
+      var self = this;
+
+      var loader = new THREE.BufferGeometryLoader()
+      loader.load( ddjson, function ( geometry ) {
+
+        var material = new THREE.MeshPhongMaterial( { color: 0x888899, shininess: 15, side: THREE.DoubleSide } );
+        mesh = new THREE.Mesh( geometry, material );
+        mesh.rotation.x = Math.PI / 2;
+
+        var geometry = new THREE.CircleBufferGeometry( 0.00166, 24 );
+        button1 = new THREE.Mesh( geometry, material.clone() );
+        button1.position.y = 0.0002;
+        button1.position.z = - 0.0035;
+        button1.rotation.x = - Math.PI / 2;
+        mesh.add( button1 );
+
+        var geometry = new THREE.CircleBufferGeometry( 0.00025, 24 );
+        touch = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { blending: THREE.AdditiveBlending, opacity: 0.2, transparent: true } ) );
+        touch.position.z = 0.0001;
+        touch.visible = false;
+        button1.add( touch );
+
+        var geometry = new THREE.CircleBufferGeometry( 0.0005, 24 );
+        button2 = new THREE.Mesh( geometry, material.clone() );
+        button2.position.y = 0.0002;
+        button2.position.z = - 0.0008;
+        button2.rotation.x = - Math.PI / 2;
+        mesh.add( button2 );
+
+        button3 = new THREE.Mesh( geometry, material.clone() );
+        button3.position.y = 0.0002;
+        button3.position.z = 0.0008;
+        button3.rotation.x = - Math.PI / 2;
+        mesh.add( button3 );
+
+        mesh.scale.set(20, 20, 20);
+
+        self.el.setObject3D('mesh', mesh);
+
+      } );
+    },
+
   connect: function () {
     var data = this.data;
     var self = this;
@@ -498,5 +543,6 @@ module.exports = {
   remove: function () {
     if (this.peer) this.peer.destroy();
     if (this.overlay) this.overlay.destroy();
+    if (this.el) this.el.removeObject3D('mesh');
   }
 };
