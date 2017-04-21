@@ -73,6 +73,12 @@ module.exports = {
     this.initialized = false;
     this.timeout = null;
 
+    this.mesh = null;
+    this.button1 = null;
+    this.button2 = null;
+    this.button3 = null;
+    this.touch = null;
+
     this.connect = this.connect.bind(this);
 
     window.addEventListener('connectDaydream', function (evt) {
@@ -212,38 +218,38 @@ module.exports = {
       loader.load( ddjson, function ( geometry ) {
 
         var material = new THREE.MeshPhongMaterial( { color: 0x888899, shininess: 15, side: THREE.DoubleSide } );
-        mesh = new THREE.Mesh( geometry, material );
-        mesh.rotation.x = Math.PI / 2;
+        self.mesh = new THREE.Mesh( geometry, material );
+        self.mesh.rotation.x = Math.PI / 2;
 
         var geometry = new THREE.CircleBufferGeometry( 0.00166, 24 );
-        button1 = new THREE.Mesh( geometry, material.clone() );
-        button1.position.y = 0.0002;
-        button1.position.z = - 0.0035;
-        button1.rotation.x = - Math.PI / 2;
-        mesh.add( button1 );
+        self.button1 = new THREE.Mesh( geometry, material.clone() );
+        self.button1.position.y = 0.0002;
+        self.button1.position.z = - 0.0035;
+        self.button1.rotation.x = - Math.PI / 2;
+        self.mesh.add( self.button1 );
 
         var geometry = new THREE.CircleBufferGeometry( 0.00025, 24 );
-        touch = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { blending: THREE.AdditiveBlending, opacity: 0.2, transparent: true } ) );
-        touch.position.z = 0.0001;
-        touch.visible = false;
-        button1.add( touch );
+        self.touch = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { blending: THREE.AdditiveBlending, opacity: 0.2, transparent: true } ) );
+        self.touch.position.z = 0.0001;
+        self.touch.visible = false;
+        self.button1.add( self.touch );
 
         var geometry = new THREE.CircleBufferGeometry( 0.0005, 24 );
-        button2 = new THREE.Mesh( geometry, material.clone() );
-        button2.position.y = 0.0002;
-        button2.position.z = - 0.0008;
-        button2.rotation.x = - Math.PI / 2;
-        mesh.add( button2 );
+        self.button2 = new THREE.Mesh( geometry, material.clone() );
+        self.button2.position.y = 0.0002;
+        self.button2.position.z = - 0.0008;
+        self.button2.rotation.x = - Math.PI / 2;
+        self.mesh.add( self.button2 );
 
-        button3 = new THREE.Mesh( geometry, material.clone() );
-        button3.position.y = 0.0002;
-        button3.position.z = 0.0008;
-        button3.rotation.x = - Math.PI / 2;
-        mesh.add( button3 );
+        self.button3 = new THREE.Mesh( geometry, material.clone() );
+        self.button3.position.y = 0.0002;
+        self.button3.position.z = 0.0008;
+        self.button3.rotation.x = - Math.PI / 2;
+        self.mesh.add( self.button3 );
 
-        mesh.scale.set(20, 20, 20);
+        self.mesh.scale.set(20, 20, 20);
 
-        self.el.setObject3D('mesh', mesh);
+        self.el.setObject3D('mesh', self.mesh);
 
       } );
     },
@@ -254,13 +260,14 @@ module.exports = {
     var debugTextArea = null;
 
     this.controller = new DaydreamController();
-    if (this.data.debugTextArea)
+    if (this.data.debugTextArea != null)
       debugTextArea = document.querySelector(this.data.debugTextArea);
 
     this.controller.onStateChange( function ( state ) {
       self.daydreamRemote = true;
 
-      debugTextArea.textContent = JSON.stringify( state, null, '\t' );
+      if (debugTextArea != null)
+        debugTextArea.textContent = JSON.stringify( state, null, '\t' );
 
       if ( self.showRemoteModel ) {
 
@@ -311,6 +318,18 @@ module.exports = {
           }
 
         }
+
+        self.mesh.quaternion.copy( self.quaternionHome );
+        self.mesh.quaternion.multiply( self.quaternion );
+        self.button1.material.emissive.g = state.isClickDown ? 0.5 : 0;
+        self.button2.material.emissive.g = state.isAppDown ? 0.5 : 0;
+        self.button3.material.emissive.g = state.isHomeDown ? 0.5 : 0;
+
+        self.touch.position.x = ( state.xTouch * 2 - 1 ) / 1000;
+        self.touch.position.y = - ( state.yTouch * 2 - 1 ) / 1000;
+
+        self.touch.visible = state.xTouch > 0 && state.yTouch > 0;
+
       }
 
 
