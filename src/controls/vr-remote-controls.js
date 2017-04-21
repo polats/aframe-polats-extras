@@ -212,6 +212,13 @@ module.exports = {
 */
 
   // initialize full tilt
+  this.data.localphonestate =
+  {
+    orientation: {},
+    touching: false
+  };
+
+    var localphonestate = this.data.localphonestate;
 
   	// Start FULLTILT DeviceOrientation listeners and register our callback
   	var deviceOrientation = FULLTILT.getDeviceOrientation({'type': 'game'});
@@ -219,11 +226,17 @@ module.exports = {
 
   		orientationData.listen(function() {
 
+        var quat = orientationData.getScreenAdjustedQuaternion();
+
         // rotate model
-        if ( self.showRemoteModel ) {
-          var quat = orientationData.getScreenAdjustedQuaternion();
-          self.mesh.quaternion.set(quat.x, quat.z, -quat.y, quat.w);
-        }
+        localphonestate.orientation =
+        {
+            x:  quat.x,
+            y:  quat.y,
+            z:  quat.z,
+            w:  quat.w
+        };
+
   		});
   	});
   },
@@ -360,54 +373,17 @@ module.exports = {
   updateOrientation: function () {
     var self = this;
     var data = this.data;
-    var orientation = data.orientation;
-    var temp_alpha, temp_beta, temp_gamma;
 
     var phonestate = this.getPhoneState();
 
-    // proxy phone
-    if (phonestate)
-    {
-      if (phonestate.orientation.alpha != undefined)
-      {
-        temp_alpha = phonestate.orientation.alpha;
-        temp_beta = phonestate.orientation.beta;
-        temp_gamma = phonestate.orientation.gamma;
-      }
+    if ( self.showRemoteModel ) {
+      var quat = phonestate.orientation;
+
+      if (quat.x != undefined)
+        self.mesh.quaternion.set(quat.x, quat.z, -quat.y, quat.w);
     }
 
-    // daydream remote
-    if (self.daydreamRemote)
-    {
-      temp_alpha = self.quaternion.x;
-      temp_beta = self.quaternion.y;
-      temp_gamma = self.quaternion.z;
-    }
 
-    if (temp_alpha)
-    {
-        if (orientation.initial_value == null)
-        {
-              orientation.initial_value =
-              {
-                alpha: temp_alpha,
-                beta: temp_beta,
-                gamma: temp_gamma
-              };
-
-              data.raycast_initialized = true;
-        }
-
-        if (data.raycast_initialized)
-        {
-
-          // store event orientation values
-          orientation.alpha =  temp_alpha;
-          orientation.beta = temp_beta;
-          orientation.gamma = temp_gamma;
-
-        }
-      }
 
   },
 
