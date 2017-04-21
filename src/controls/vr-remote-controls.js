@@ -212,33 +212,20 @@ module.exports = {
 */
 
   // initialize full tilt
-  this.data.localphonestate =
-  {
-    orientation: {},
-    touching: false
-  };
+  this.localRemoteState = null;
+  this.activeState = null;
+  var self = this;
 
-    var localphonestate = this.data.localphonestate;
+	// Start FULLTILT DeviceOrientation listeners and register our callback
+	var deviceOrientation = FULLTILT.getDeviceOrientation({'type': 'game'});
+	deviceOrientation.then(function(orientationData) {
 
-  	// Start FULLTILT DeviceOrientation listeners and register our callback
-  	var deviceOrientation = FULLTILT.getDeviceOrientation({'type': 'game'});
-  	deviceOrientation.then(function(orientationData) {
+		orientationData.listen(function() {
 
-  		orientationData.listen(function() {
+      self.localRemoteState = orientationData;
 
-        var quat = orientationData.getScreenAdjustedQuaternion();
-
-        // rotate model
-        localphonestate.orientation =
-        {
-            x:  quat.x,
-            y:  quat.y,
-            z:  quat.z,
-            w:  quat.w
-        };
-
-  		});
-  	});
+		});
+	});
   },
 
   update: function() {
@@ -289,109 +276,125 @@ module.exports = {
   connect: function () {
     var data = this.data;
     var self = this;
-    var debugTextArea = null;
 
     this.controller = new DaydreamController();
-    if (this.data.debugTextArea != null)
-      debugTextArea = document.querySelector(this.data.debugTextArea);
 
     this.controller.onStateChange( function ( state ) {
+
       self.daydreamRemote = true;
-
-      if (debugTextArea != null)
-        debugTextArea.textContent = JSON.stringify( state, null, '\t' );
-
-      if ( self.showRemoteModel ) {
-
-        var angle = Math.sqrt( state.xOri * state.xOri + state.yOri * state.yOri + state.zOri * state.zOri );
-
-        if ( angle > 0 ) {
-
-          self.axis.set( state.xOri, state.yOri, state.zOri )
-          self.axis.multiplyScalar( 1 / angle );
-
-          self.quaternion.setFromAxisAngle( self.axis, angle );
-
-          if ( self.initialised === false ) {
-
-            self.quaternionHome.copy( self.quaternion );
-            self.quaternionHome.inverse();
-
-            self.initialised = true;
-
-          }
-
-        } else {
-
-          self.quaternion.set( 0, 0, 0, 1 );
-
-        }
-
-        if ( state.isHomeDown ) {
-
-          if ( self.timeout === null ) {
-
-            self.timeout = setTimeout( function () {
-
-              self.quaternionHome.copy( self.quaternion );
-              self.quaternionHome.inverse();
-
-            }, 1000 );
-
-          }
-
-        } else {
-
-          if ( self.timeout !== null ) {
-
-            clearTimeout( self.timeout );
-            self.timeout = null;
-
-          }
-
-        }
-
-        self.mesh.quaternion.copy( self.quaternionHome );
-        self.mesh.quaternion.multiply( self.quaternion );
-        self.button1.material.emissive.g = state.isClickDown ? 0.5 : 0;
-        self.button2.material.emissive.g = state.isAppDown ? 0.5 : 0;
-        self.button3.material.emissive.g = state.isHomeDown ? 0.5 : 0;
-
-        self.touch.position.x = ( state.xTouch * 2 - 1 ) / 1000;
-        self.touch.position.y = - ( state.yTouch * 2 - 1 ) / 1000;
-
-        self.touch.visible = state.xTouch > 0 && state.yTouch > 0;
-
-      }
-
+      self.localRemoteState = state;
 
     } );
     this.controller.connect();
 
   },
 
-  updateOrientation: function () {
-    var self = this;
-    var data = this.data;
+  updateRemoteModel: function () {
 
-    var phonestate = this.getPhoneState();
+    var state = this.activeState;
 
-    if ( self.showRemoteModel ) {
-      var quat = phonestate.orientation;
+      this.button1.material.emissive.g = state.isClickDown ? 0.5 : 0;
+      this.button2.material.emissive.g = state.isAppDown ? 0.5 : 0;
+      this.button3.material.emissive.g = state.isHomeDown ? 0.5 : 0;
 
-      if (quat.x != undefined)
-        self.mesh.quaternion.set(quat.x, quat.z, -quat.y, quat.w);
-    }
+      this.touch.position.x = ( state.xTouch * 2 - 1 ) / 1000;
+      this.touch.position.y = - ( state.yTouch * 2 - 1 ) / 1000;
 
-
+      this.touch.visible = state.xTouch > 0 && state.yTouch > 0;
 
   },
 
-  getPhoneState: function () {
+  updateOrientation: function () {
+
+      var state = this.activeState;
+
+      if (this.daydreamRemote)
+      {
+        var axis = this.axis;
+
+        var angle = Math.sqrt( state.xOri * state.xOri + state.yOri * state.yOri + state.zOri * state.zOri );
+
+        if ( angle > 0 ) {
+
+          axis.set( state.xOri, state.yOri, state.zOri )
+          axis.multiplyScalar( 1 / angle );
+
+          this.quaternion.setFromAxisAngle( axis, angle );
+
+          if ( this.initialised === false ) {
+
+            this.quaternionHome.copy( this.quaternion );
+            this.quaternionHome.inverse();
+
+            this.initialised = true;
+
+          }
+
+        } else {
+
+          this.quaternion.set( 0, 0, 0, 1 );
+
+        }
+
+        this.mesh.quaternion.copy( this.quaternionHome );
+        this.mesh.quaternion.multiply( this.quaternion );
+      }
+
+      else
+      {
+        var quat = state.getScreenAdjustedQuaternion();
+        this.mesh.quaternion.set(quat.x, quat.z, -quat.y, quat.w);
+      }
+  },
+
+  getRemoteState: function () {
     if (this.isConnected()) {
-      return this.getRemotePhoneState();
+      return this.getProxyRemoteState();
     }
-    return this.data.localphonestate;
+    return this.localRemoteState;
+  },
+
+  printDebug: function()
+  {
+    var debugTextArea = null;
+
+    if (this.data.debugTextArea != null)
+      debugTextArea = document.querySelector(this.data.debugTextArea);
+
+      if (debugTextArea != null)
+        debugTextArea.textContent = JSON.stringify( phonestate, null, '\t' );
+
+  },
+
+  processInput: function()
+  {
+    var state = this.activeState;
+    var self = this;
+
+    if ( state.isHomeDown ) {
+
+      if ( this.timeout === null ) {
+
+        this.timeout = setTimeout( function () {
+
+          self.quaternionHome.copy( self.quaternion );
+          self.quaternionHome.inverse();
+
+        }, 1000 );
+
+      }
+
+    } else {
+
+      if ( this.timeout !== null ) {
+
+        clearTimeout( this.timeout );
+        this.timeout = null;
+
+      }
+
+    }
+
   },
 
   /**
@@ -402,7 +405,19 @@ module.exports = {
       var el = this.el;
       var self = this;
 
-      this.updateOrientation();
+      // get latest state
+      self.activeState = this.getRemoteState();
+
+      if (self.activeState != null)
+      {
+          this.updateOrientation();
+
+          if (self.showRemoteModel)
+            this.updateRemoteModel();
+
+          this.processInput();
+          this.printDebug();
+      }
 
       if (data.raycast_initialized) {
 
@@ -529,11 +544,11 @@ module.exports = {
 
   /**
    * Returns an object representing remote phone state, containing
-   * orientation data (alpha, beta, gamma) and touch / gesture states.
+   * orientation data and touch / gesture states.
    *
    * @return {Object}
    */
-  getRemotePhoneState: function () {
+  getProxyRemoteState: function () {
     return this.state.remotephone;
   },
 
