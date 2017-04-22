@@ -72,8 +72,12 @@ module.exports = {
     this.quaternionHome = new THREE.Quaternion();
     this.showRemoteModel = true;
     this.initialized = false;
+
+    // timeouts for processing button presses
     this.timeout = null;
     this.touchTimeout = null;
+    this.tapTimeout = null;
+    this.tapPressTimeout = null;
 
     this.mesh = null;
     this.button1 = null;
@@ -222,11 +226,16 @@ module.exports = {
     isVolMinusDown: false,
     xTouch: 0,
     yTouch: 0,
-    isTouchingScreen: false
+    tapFingerCount: 0,
+    pressedFingerCount: 0
   };
 
   this.activeState = null;
+  this.ongoingTouch = null;
   const PRESS_THRESHOLD = 300;
+  const TAP_THRESHOLD = 100;
+  const TAP_DURATION = 20;
+  const TRACKPAD_SPEED = 0.025;
   var self = this;
 
 	// Start FULLTILT DeviceOrientation listeners and register our callback
@@ -240,15 +249,51 @@ module.exports = {
 		});
 	});
 
-  // initialize touch options
+  // initialize touch behavior
   window.addEventListener('touchstart', function (evt) {
       var touches = evt.touches;
+
+      // remove press timeouts
       if ( self.touchTimeout !== null ) {
         clearTimeout( self.touchTimeout );
         self.touchTimeout = null;
       }
 
+      if (self.tapTimeout !== null)
+      {
+        clearTimeout( self.tapTimeout );
+        self.tapTimeout = null;
+      }
 
+      if (touches.length == 1)
+      {
+        // start trackpad
+        self.localRemoteState.xTouch = 0.5;
+        self.localRemoteState.yTouch = 0.5;
+        self.ongoingTouch =
+        {
+          pageX: touches[0].pageX,
+          pageY: touches[0].pageY
+        };
+      }
+
+      // only process trackpad on single touch
+      else
+      {
+        self.localRemoteState.xTouch = 0;
+        self.localRemoteState.yTouch = 0;
+        self.ongoingTouch = null;
+      }
+
+      // start tap touchTimeout
+      self.localRemoteState.tapFingerCount += 1;
+
+      self.tapTimeout = setTimeout( function () {
+        self.localRemoteState.tapFingerCount = 0;
+      }, TAP_THRESHOLD);
+
+
+      // set press function
       self.touchTimeout = setTimeout( function () {
         switch (touches.length)
         {
@@ -270,8 +315,52 @@ module.exports = {
     {
       clearTimeout( self.touchTimeout );
       self.touchTimeout = null;
-      self.touchTimeout = setTimeout( function () {
-        switch (touches.length)
+    }
+
+    var touches = evt.touches;
+    var changedTouches = evt.changedTouches;
+
+    // only process touch on single fingers
+    if (changedTouches.length === 1)
+    {
+      var xMove = 0.5 + ((changedTouches[0].pageX - self.ongoingTouch.pageX) * TRACKPAD_SPEED);
+      var yMove = 0.5 + ((changedTouches[0].pageY - self.ongoingTouch.pageY) * TRACKPAD_SPEED);
+
+      if (xMove < 0) xMove = 0.0001;
+      if (xMove > 1) xMove = 1;
+      if (yMove < 0) yMove = 0.0001;
+      if (yMove > 1) yMove = 1;
+
+        self.localRemoteState.xTouch = xMove;
+        self.localRemoteState.yTouch = yMove;
+    }
+
+
+  });
+
+  window.addEventListener('touchend', function (evt) {
+    var touches = evt.touches;
+
+    // clear press timeout
+    if (touches.length == 0)
+    {
+      if ( self.touchTimeout !== null ) {
+        clearTimeout( self.touchTimeout );
+        self.touchTimeout = null;
+      }
+
+      // process tap
+      if (self.localRemoteState.tapFingerCount > 0)
+      {
+        if (self.tapTimeout !== null)
+        {
+          clearTimeout( self.tapTimeout );
+          self.tapTimeout = null;
+        }
+
+        self.localRemoteState.pressedFingerCount = self.localRemoteState.tapFingerCount;
+
+        switch (self.localRemoteState.pressedFingerCount)
         {
           case 1:
             self.localRemoteState.isClickDown = true;
@@ -282,26 +371,45 @@ module.exports = {
           case 3:
           self.localRemoteState.isHomeDown = true;
             break;
-        };
-      }, PRESS_THRESHOLD );
-    }
-  });
+        }
 
-  window.addEventListener('touchend', function (evt) {
-    var touches = evt.touches;
-    if (touches.length == 0)
-    {
-      if ( self.touchTimeout !== null ) {
-        clearTimeout( self.touchTimeout );
-        self.touchTimeout = null;
+        // keep pressed for tap duration
+        self.touchTimeout = setTimeout( function () {
+          switch (self.localRemoteState.pressedFingerCount)
+          {
+            case 1:
+              self.localRemoteState.isClickDown = false;
+              break;
+            case 2:
+            self.localRemoteState.isAppDown = false;
+              break;
+            case 3:
+            self.localRemoteState.isHomeDown = false;
+              break;
+          };
+
+          self.localRemoteState.pressedFingerCount = 0;
+        }, TAP_DURATION );
+
       }
+
+      self.localRemoteState.xTouch = 0;
+      self.localRemoteState.yTouch = 0;
+      self.localRemoteState.tapFingerCount = 0;
     }
-      if (touches.length < 3)
-        self.localRemoteState.isHomeDown = false;
-      if (touches.length < 2)
-        self.localRemoteState.isAppDown = false;
-      if (touches.length < 1)
-        self.localRemoteState.isClickDown = false;
+
+      // disable presses
+      if (self.localRemoteState.pressedFingerCount == 0)
+      {
+        if (touches.length < 3)
+          self.localRemoteState.isHomeDown = false;
+        if (touches.length < 2)
+          self.localRemoteState.isAppDown = false;
+        if (touches.length < 1)
+          self.localRemoteState.isClickDown = false;
+      }
+
+      self.ongoingTouch = null;
   });
 
   },
