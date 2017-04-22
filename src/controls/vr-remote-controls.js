@@ -73,6 +73,7 @@ module.exports = {
     this.showRemoteModel = true;
     this.initialized = false;
     this.timeout = null;
+    this.touchTimeout = null;
 
     this.mesh = null;
     this.button1 = null;
@@ -212,7 +213,18 @@ module.exports = {
 */
 
   // initialize full tilt
-  this.localRemoteState = null;
+  this.localRemoteState =
+  {
+    isClickDown: false,
+    isAppDown: false,
+    isHomeDown: false,
+    isVolPlusDown: false,
+    isVolMinusDown: false,
+    xTouch: 0,
+    yTouch: 0,
+    isTouchingScreen: false
+  };
+
   this.activeState = null;
   var self = this;
 
@@ -222,10 +234,46 @@ module.exports = {
 
 		orientationData.listen(function() {
 
-      self.localRemoteState = orientationData;
+      self.localRemoteState.orientationData = orientationData;
 
 		});
 	});
+
+  // initialize touch options
+  window.addEventListener('touchstart', function (evt) {
+    var touches = evt.touches;
+    if (touches.length == 1)
+    {
+          self.touchTimeout = setTimeout( function () {
+            self.localRemoteState.isClickDown = true;
+          }, 300 );
+    }
+  });
+
+  window.addEventListener('touchmove', function (evt) {
+    if (self.touchTimeout !== null)
+    {
+      clearTimeout( self.touchTimeout );
+      self.touchTimeout = null;
+      self.touchTimeout = setTimeout( function () {
+        self.localRemoteState.isClickDown = true;
+      }, 300 );
+    }
+  });
+
+  window.addEventListener('touchend', function (evt) {
+    var touches = evt.touches;
+    if (touches.length == 0)
+    {
+      if ( self.touchTimeout !== null ) {
+        clearTimeout( self.touchTimeout );
+        self.touchTimeout = null;
+      }
+
+      self.localRemoteState.isClickDown = false;
+    }
+  });
+
   },
 
   update: function() {
@@ -343,12 +391,16 @@ module.exports = {
       else
       {
         var quat = null;
+
         if (this.isConnected())
         {
           quat = state.orientation;
         }
         else
-          quat = state.getScreenAdjustedQuaternion();
+        {
+          if (state.orientationData)
+            quat = state.orientationData.getScreenAdjustedQuaternion();
+        }
 
         if (quat)
           this.mesh.quaternion.set(quat.x, quat.z, -quat.y, quat.w);
@@ -370,7 +422,7 @@ module.exports = {
       debugTextArea = document.querySelector(this.data.debugTextArea);
 
       if (debugTextArea != null)
-        debugTextArea.textContent = JSON.stringify( phonestate, null, '\t' );
+        debugTextArea.textContent = JSON.stringify( this.localRemoteState, null, '\t' );
 
   },
 
