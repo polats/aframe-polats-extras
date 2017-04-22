@@ -226,6 +226,7 @@ module.exports = {
   };
 
   this.activeState = null;
+  const PRESS_THRESHOLD = 300;
   var self = this;
 
 	// Start FULLTILT DeviceOrientation listeners and register our callback
@@ -241,13 +242,27 @@ module.exports = {
 
   // initialize touch options
   window.addEventListener('touchstart', function (evt) {
-    var touches = evt.touches;
-    if (touches.length == 1)
-    {
-          self.touchTimeout = setTimeout( function () {
+      var touches = evt.touches;
+      if ( self.touchTimeout !== null ) {
+        clearTimeout( self.touchTimeout );
+        self.touchTimeout = null;
+      }
+
+
+      self.touchTimeout = setTimeout( function () {
+        switch (touches.length)
+        {
+          case 1:
             self.localRemoteState.isClickDown = true;
-          }, 300 );
-    }
+            break;
+          case 2:
+          self.localRemoteState.isAppDown = true;
+            break;
+          case 3:
+          self.localRemoteState.isHomeDown = true;
+            break;
+        };
+      }, PRESS_THRESHOLD );
   });
 
   window.addEventListener('touchmove', function (evt) {
@@ -256,8 +271,19 @@ module.exports = {
       clearTimeout( self.touchTimeout );
       self.touchTimeout = null;
       self.touchTimeout = setTimeout( function () {
-        self.localRemoteState.isClickDown = true;
-      }, 300 );
+        switch (touches.length)
+        {
+          case 1:
+            self.localRemoteState.isClickDown = true;
+            break;
+          case 2:
+          self.localRemoteState.isAppDown = true;
+            break;
+          case 3:
+          self.localRemoteState.isHomeDown = true;
+            break;
+        };
+      }, PRESS_THRESHOLD );
     }
   });
 
@@ -269,9 +295,13 @@ module.exports = {
         clearTimeout( self.touchTimeout );
         self.touchTimeout = null;
       }
-
-      self.localRemoteState.isClickDown = false;
     }
+      if (touches.length < 3)
+        self.localRemoteState.isHomeDown = false;
+      if (touches.length < 2)
+        self.localRemoteState.isAppDown = false;
+      if (touches.length < 1)
+        self.localRemoteState.isClickDown = false;
   });
 
   },
@@ -369,23 +399,11 @@ module.exports = {
 
           this.quaternion.setFromAxisAngle( axis, angle );
 
-          if ( this.initialised === false ) {
-
-            this.quaternionHome.copy( this.quaternion );
-            this.quaternionHome.inverse();
-
-            this.initialised = true;
-
-          }
-
         } else {
 
           this.quaternion.set( 0, 0, 0, 1 );
 
         }
-
-        this.mesh.quaternion.copy( this.quaternionHome );
-        this.mesh.quaternion.multiply( this.quaternion );
       }
 
       else
@@ -403,8 +421,21 @@ module.exports = {
         }
 
         if (quat)
-          this.mesh.quaternion.set(quat.x, quat.z, -quat.y, quat.w);
+          this.quaternion.set(quat.x, quat.z, -quat.y, quat.w);
       }
+
+      if ( this.initialised === false ) {
+
+        this.quaternionHome.copy( this.quaternion );
+        this.quaternionHome.inverse();
+
+        this.initialised = true;
+
+      }
+
+      this.mesh.quaternion.copy( this.quaternionHome );
+      this.mesh.quaternion.multiply( this.quaternion );
+
   },
 
   getRemoteState: function () {
