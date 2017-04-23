@@ -73,12 +73,6 @@ module.exports = {
     this.showRemoteModel = true;
     this.initialized = false;
 
-    // timeouts for processing button presses
-    this.timeout = null;
-    this.touchTimeout = null;
-    this.tapTimeout = null;
-    this.tapPressTimeout = null;
-
     this.mesh = null;
     this.button1 = null;
     this.button2 = null;
@@ -225,17 +219,24 @@ module.exports = {
     isVolPlusDown: false,
     isVolMinusDown: false,
     xTouch: 0,
-    yTouch: 0,
-    tapFingerCount: 0,
-    pressedFingerCount: 0
+    yTouch: 0
   };
 
+  this.tapFingerCount = 0;
+  this.pressedFingerCount = 0;
   this.activeState = null;
   this.ongoingTouch = null;
   const PRESS_THRESHOLD = 300;
   const TAP_THRESHOLD = 100;
   const TAP_DURATION = 20;
   const TRACKPAD_SPEED = 0.025;
+
+  // timeouts for processing button presses
+  this.timeout = null;
+  this.touchTimeout = null;
+  this.tapTimeout = null;
+  this.tapPressTimeout = null;
+
   var self = this;
 
 	// Start FULLTILT DeviceOrientation listeners and register our callback
@@ -251,6 +252,7 @@ module.exports = {
 
   // initialize touch behavior
   window.addEventListener('touchstart', function (evt) {
+      if (self.isConnected()) return;
       var touches = evt.touches;
 
       // remove press timeouts
@@ -286,10 +288,10 @@ module.exports = {
       }
 
       // start tap touchTimeout
-      self.localRemoteState.tapFingerCount += 1;
+      self.tapFingerCount += 1;
 
       self.tapTimeout = setTimeout( function () {
-        self.localRemoteState.tapFingerCount = 0;
+        self.tapFingerCount = 0;
       }, TAP_THRESHOLD);
 
 
@@ -311,6 +313,8 @@ module.exports = {
   });
 
   window.addEventListener('touchmove', function (evt) {
+    if (self.isConnected()) return;
+
     if (self.touchTimeout !== null)
     {
       clearTimeout( self.touchTimeout );
@@ -339,6 +343,8 @@ module.exports = {
   });
 
   window.addEventListener('touchend', function (evt) {
+    if (self.isConnected()) return;
+    
     var touches = evt.touches;
 
     // clear press timeout
@@ -350,7 +356,7 @@ module.exports = {
       }
 
       // process tap
-      if (self.localRemoteState.tapFingerCount > 0)
+      if (self.tapFingerCount > 0)
       {
         if (self.tapTimeout !== null)
         {
@@ -358,9 +364,9 @@ module.exports = {
           self.tapTimeout = null;
         }
 
-        self.localRemoteState.pressedFingerCount = self.localRemoteState.tapFingerCount;
+        self.pressedFingerCount = self.tapFingerCount;
 
-        switch (self.localRemoteState.pressedFingerCount)
+        switch (self.pressedFingerCount)
         {
           case 1:
             self.localRemoteState.isClickDown = true;
@@ -375,7 +381,7 @@ module.exports = {
 
         // keep pressed for tap duration
         self.touchTimeout = setTimeout( function () {
-          switch (self.localRemoteState.pressedFingerCount)
+          switch (self.pressedFingerCount)
           {
             case 1:
               self.localRemoteState.isClickDown = false;
@@ -388,18 +394,18 @@ module.exports = {
               break;
           };
 
-          self.localRemoteState.pressedFingerCount = 0;
+          self.pressedFingerCount = 0;
         }, TAP_DURATION );
 
       }
 
       self.localRemoteState.xTouch = 0;
       self.localRemoteState.yTouch = 0;
-      self.localRemoteState.tapFingerCount = 0;
+      self.tapFingerCount = 0;
     }
 
       // disable presses
-      if (self.localRemoteState.pressedFingerCount == 0)
+      if (self.pressedFingerCount == 0)
       {
         if (touches.length < 3)
           self.localRemoteState.isHomeDown = false;
