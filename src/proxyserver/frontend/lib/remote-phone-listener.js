@@ -27,10 +27,10 @@ function RemotePhoneListener () {
   this.pressedFingerCount = 0;
   this.activeState = null;
   this.ongoingTouch = null;
-  const PRESS_THRESHOLD = 300;
-  const TAP_THRESHOLD = 100;
-  const TAP_DURATION = 20;
-  const TRACKPAD_SPEED = 0.025;
+  this.PRESS_THRESHOLD = 300;
+  this.TAP_THRESHOLD = 100;
+  this.TAP_DURATION = 20;
+  this.TRACKPAD_SPEED = 0.025;
 
   // timeouts for processing button presses
   this.timeout = null;
@@ -107,24 +107,25 @@ RemotePhoneListener.prototype.onTouchStart = function (evt) {
 
   this.tapTimeout = setTimeout( function () {
     this.tapFingerCount = 0;
-  }, TAP_THRESHOLD);
+  }, this.TAP_THRESHOLD);
 
 
   // set press function
+  var self = this;
   this.touchTimeout = setTimeout( function () {
     switch (touches.length)
     {
       case 1:
-        this.localRemoteState.isClickDown = true;
+        self.localRemoteState.isClickDown = true;
         break;
       case 2:
-      this.localRemoteState.isAppDown = true;
+      self.localRemoteState.isAppDown = true;
         break;
       case 3:
-      this.localRemoteState.isHomeDown = true;
+      self.localRemoteState.isHomeDown = true;
         break;
     };
-  }, PRESS_THRESHOLD );
+  }, this.PRESS_THRESHOLD );
 
   this.emit(this.type, {type: this.type, state: this.localRemoteState});
 }
@@ -142,8 +143,8 @@ RemotePhoneListener.prototype.onTouchMove = function (evt) {
   // only process touch on single fingers
   if (changedTouches.length === 1)
   {
-    var xMove = 0.5 + ((changedTouches[0].pageX - this.ongoingTouch.pageX) * TRACKPAD_SPEED);
-    var yMove = 0.5 + ((changedTouches[0].pageY - this.ongoingTouch.pageY) * TRACKPAD_SPEED);
+    var xMove = 0.5 + ((changedTouches[0].pageX - this.ongoingTouch.pageX) * this.TRACKPAD_SPEED);
+    var yMove = 0.5 + ((changedTouches[0].pageY - this.ongoingTouch.pageY) * this.TRACKPAD_SPEED);
 
     if (xMove < 0) xMove = 0.0001;
     if (xMove > 1) xMove = 1;
@@ -165,6 +166,7 @@ RemotePhoneListener.prototype.onTouchEnd = function (evt) {
   // clear press timeout
   if (touches.length == 0)
   {
+
     if ( this.touchTimeout !== null ) {
       clearTimeout( this.touchTimeout );
       this.touchTimeout = null;
@@ -195,22 +197,24 @@ RemotePhoneListener.prototype.onTouchEnd = function (evt) {
       }
 
       // keep pressed for tap duration
+      var self = this;
+
       this.touchTimeout = setTimeout( function () {
-        switch (this.pressedFingerCount)
+        switch (self.pressedFingerCount)
         {
           case 1:
-            this.localRemoteState.isClickDown = false;
+            self.localRemoteState.isClickDown = false;
             break;
           case 2:
-          this.localRemoteState.isAppDown = false;
+          self.localRemoteState.isAppDown = false;
             break;
           case 3:
-          this.localRemoteState.isHomeDown = false;
+          self.localRemoteState.isHomeDown = false;
             break;
         };
 
-        this.pressedFingerCount = 0;
-      }, TAP_DURATION );
+        self.pressedFingerCount = 0;
+      }, this.TAP_DURATION );
 
     }
 
