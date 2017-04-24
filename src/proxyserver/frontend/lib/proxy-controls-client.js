@@ -97,7 +97,7 @@ ProxyControlsClient.prototype.bindEvents = function () {
     listener.on(listener.type, function (e) {
       self.peer.send(e);
       self.emit(listener.type, e);
-      console.log('publish(%s)', JSON.stringify(e, null, 2));
+      // console.log('publish(%s)', JSON.stringify(e, null, 2));
     });
   });
 };
