@@ -9,7 +9,7 @@
     "proxyport": 3000,
     "demo_host": "localhost",
     "demo_port": 3000,
-    "proxy_url": "http://localhost:3000"
+    "proxy_url": "https://vr-remote-control.herokuapp.com"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
   "scripts": {
     "dev": "budo --port=9000 browser.js:aframe-polats-extras.js --live --open",
     "dev:win": "live-server . --port=9000 --no-browser & watch-exec -c 'browserify browser.js -d -o aframe-polats-extras.js' -w src",
-    "start": "npm run dev",
+    "start": "npm run proxyserver",
     "build": "./scripts/build.js",
     "dist": "./scripts/dist.js",
     "test": "karma start ./tests/karma.conf.js",
