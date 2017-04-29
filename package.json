@@ -1,6 +1,10 @@
 {
   "name": "aframe-polats-extras",
   "version": "1.0.0",
+  "engines": {
+    "node": "6.4.0",
+    "npm": "3.10.3"
+  },
   "description": "More add-ons and examples for A-Frame VR. Based on aframe-extras",
   "author": "Paul Gadi <paulgadi@gmail.com>",
   "license": "MIT",
