@@ -7,7 +7,7 @@ var SocketPeer = require('socketpeer'),
 
 var DaydreamController = require('../lib/DaydreamController');
 
-var PROXY_URL = 'http://localhost:3000';
+var PROXY_URL = 'https://vr-remote-control.herokuapp.com';
 if (typeof process !== 'undefined') {
   PROXY_URL = process.env.npm_package_config_proxy_url || PROXY_URL;
 }
@@ -344,7 +344,7 @@ module.exports = {
 
   window.addEventListener('touchend', function (evt) {
     if (self.isConnected()) return;
-    
+
     var touches = evt.touches;
 
     // clear press timeout
