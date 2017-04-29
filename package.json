@@ -11,7 +11,7 @@
   "main": "index.js",
   "config": {
     "proxyport": 3000,
-    "demo_host": "localhost",
+    "demo_host": "https://vr-remote-control.herokuapp.com",
     "demo_port": 3000,
     "proxy_url": "https://vr-remote-control.herokuapp.com"
   },
