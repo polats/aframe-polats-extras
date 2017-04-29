@@ -352,7 +352,7 @@ module.exports = {
     if (false)
     {
       var touches = evt
-      if (!touches || touches.length !== 1) { return }
+      if (!touches || touches.length != 1) { return }
       var touch = touches[0]
       cx = touch.pageX
       cy = touch.pageY
@@ -379,7 +379,7 @@ module.exports = {
     var cx, cy
 
     var touches = evt.changedTouches
-    if (!touches || touches.length !== 1) { return }
+    if (!touches || touches.length != 1) { return }
     var touch = touches[0]
     cx = touch.clientX
     cy = touch.clientY
