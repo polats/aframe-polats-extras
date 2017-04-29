@@ -4,35 +4,38 @@
 
   <div class="container">
     <h1 class="home-title">
-      <div>Mobile WebVR</div>
-      <div><span style="position: relative;"><span style="position: absolute; left: -0.75em;">+</span>Interactivity</span></div>
+      <div>VR Remote Control</div>
 
     </h1>
 
     <h3 class="home-subtitle">
-      Connect input devices from your desktop to your mobile phone with WebRTC.
+      Use your mobile phone or a daydream controller as a WebVR remote controller.
     </h3>
 
     <div class="home-links">
-      <a class="button" ng-class="{'button-primary': !isMobile}" href="/#/connect">Connect as host (desktop)</a>
-      <a class="button" ng-class="{'button-primary': isMobile}" href="{{ demoUrl }}">Demo as viewer (mobile)</a>
+      <a class="button" ng-class="{'button-primary': isMobile}" href="/#/connect">Remote Page</a>
+      <a class="button" ng-class="{'button-primary': !isMobile}" href="{{ demoUrl }}">Demo Page</a>
     </div>
   </div>
 
   <div class="container home-caption">
     <p>
-      Developing with <a href="https://aframe.io/" target="_blank">A-Frame</a>?
-      Use the
-      <a class="a-with-icon" href="https://github.com/donmccurdy/aframe-proxy-controls" target="_blank">
-        proxy-controls&nbsp;<img class="a-icon"
+    If using a mobile phone as a remote, open the <a href="{{ demoUrl }}">Demo Page</a>
+    on desktop and the <a href="/#/connect">Remote Page</a> on your mobile. Pair the devices together using the
+    pair code on the demo page.
+    </p>
+    <p>
+      Best used with <a href="https://aframe.io/" target="_blank">A-Frame</a>.
+      See source code and other components on
+      <a class="a-with-icon" href="https://github.com/polats/aframe-polats-extras" target="_blank">
+        aframe-polats-extras.&nbsp;<img class="a-icon"
                                  src="/assets/GitHub-Mark-Light-32px.png"
                                  srcset="/assets/GitHub-Mark-Light-32px.png 1x,
                                          /assets/GitHub-Mark-Light-64px.png 2x"
                                  alt="GitHub logo">
       </a>
-      component in your scene. Your demo will use this site as the backend (it’s free), so
-      there’s no need to run your own server.
-      <a href="/#/docs#remote-device">Read more</a>.
+      VR Remote Control is based on Don McCurdy's
+      <a href="https://proxy-controls.donmccurdy.com">ProxyControls.js</a>.
     </p>
   </div>
 

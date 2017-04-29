@@ -6,9 +6,9 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>ProxyControls.js</title>
-  <meta name="description" content="Mobile WebVR + Interactivity. Connect input devices from your desktop to your mobile phone with WebRTC.">
-  <meta name="author" content="Don McCurdy">
+  <title>VR Remote Control</title>
+  <meta name="description" content="Use your mobile phone as a VR remote controller. Based on proxycontrols.js">
+  <meta name="author" content="Paul Gadi">
 
   <!-- Mobile Specific Metas
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -38,7 +38,7 @@
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    ga('create', 'UA-37139324-2', 'auto');
+    ga('create', '', 'auto');
     ga('send', 'pageview');
   </script>
 
@@ -54,8 +54,7 @@
   <header class="row" ng-controller="NavCtrl">
     <div class="container">
       <h4>
-        <a class="logo" href="/#/">ProxyControls<span style="font-weight: 100;">.js</span></a>
-        <span class="version">Beta</span>
+        <a class="logo" href="/#/">VR Remote Control</a>
       </h4>
       <div class="menu-btn" ng-click="navOpen = !navOpen" aria-label="Menu"></div>
       <nav class="u-pull-right" ng-class="{ open: navOpen }">
@@ -65,9 +64,9 @@
         <a href="/#/connect"
            class="nav-link"
            ng-class="{active: isActive('/connect')}">Connect</a>
-        <a href="/#/docs"
+        <a href="/demo"
            class="nav-link"
-           ng-class="{active: isActive('/docs')}">Docs</a>
+           ng-class="{active: isActive('/demo')}">Demo</a>
       </nav>
     </div>
   </header>
@@ -76,39 +75,6 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <div ng-view class="view-wrap flex flex-column flex-grow"></div>
 
-  <!-- Footer
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <footer class="row">
-    <div class="row container">
-      <div class="footer-links three columns">
-        <li class="footer-link">
-          <a target="_blank" href="https://github.com/donmccurdy/proxy-controls-server">GitHub</a>
-        </li>
-        <li class="footer-link">
-          <a target="_blank" href="https://github.com/donmccurdy/proxy-controls-server/issues/new">Feedback</a>
-        </li>
-        <li class="footer-link">
-          <a target="_blank" href="https://webrtc.org/">WebRTC</a>
-        </li>
-      </div>
-      <div class="footer-desc nine columns">
-        <p>
-          <b>ProxyControls.js</b> is made by <a target="_blank" href="https://twitter.com/donrmccurdy">@donrmccurdy</a>.
-          Website built with <a class="attrib" href="https://nodejs.org/" target="_blank">Node.js</a>,
-          <a class="attrib" href="https://angularjs.org/" target="_blank">Angular.js</a>,
-          and <a class="attrib" href="http://getskeleton.com/" target="_blank">Skeleton</a>.
-          Background image <a class="attrib" href="http://subtlepatterns.com/dark-sharp-edges/" target="_blank">“Dark Sharp Edges”</a>
-          under <a class="attrib" href="https://creativecommons.org/licenses/by-sa/3.0/us/" target="_blank">CC BY-SA 3.0</a>
-          - <a class="attrib" href="http://subtlepatterns.com/" target="_blank">Subtle Patterns</a>
-          © <a class="attrib" href="http://lodyas.com/carlos-aguilar/" target="_blank">Carlos Aguilar</a>.
-        </p>
-        <p>
-          Open source. MIT license, 2016.
-        </p>
-      </div>
-    </div>
-  </footer>
 
 </body>
 </html>
-
